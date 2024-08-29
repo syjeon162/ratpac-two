@@ -145,6 +145,10 @@ class OutNtupleProc : public Processor {
   std::vector<int> processCodeIndex;
   std::vector<std::string> processName;
 
+  std::map<std::string, int> volumeCodeMap;
+  std::vector<int> volumeCodeIndex;
+  std::vector<std::string> volumeName;
+
   std::vector<int> trackPDG;
   std::vector<std::vector<double>> trackPosX;
   std::vector<std::vector<double>> trackPosY;
@@ -155,6 +159,7 @@ class OutNtupleProc : public Processor {
   std::vector<std::vector<double>> trackKE;
   std::vector<std::vector<double>> trackTime;
   std::vector<std::vector<int>> trackProcess;
+  std::vector<std::vector<int>> trackVolume;
 
   std::set<std::string> branchNames;
 

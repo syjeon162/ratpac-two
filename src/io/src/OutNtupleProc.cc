@@ -175,6 +175,8 @@ bool OutNtupleProc::OpenFile(std::string filename) {
     outputTree->Branch("trackTime", &trackTime);
     outputTree->Branch("trackProcess", &trackProcess);
     metaTree->Branch("processCodeMap", &processCodeMap);
+    outputTree->Branch("trackVolume", &trackVolume);
+    metaTree->Branch("volumeCodeMap", &volumeCodeMap);
   }
   this->AssignAdditionalAddresses();
 
@@ -243,11 +245,13 @@ Processor::Result OutNtupleProc::DSEvent(DS::Root *ds) {
     trackKE.clear();
     trackTime.clear();
     trackProcess.clear();
+    trackVolume.clear();
 
     std::vector<double> xtrack, ytrack, ztrack;
     std::vector<double> pxtrack, pytrack, pztrack;
     std::vector<double> kinetic, globaltime;
     std::vector<int> processMapID;
+    std::vector<int> volumeMapID;
     for (int trk = 0; trk < nTracks; trk++) {
       DS::MCTrack *track = mc->GetMCTrack(trk);
       trackPDG.push_back(track->GetPDGCode());
@@ -260,6 +264,7 @@ Processor::Result OutNtupleProc::DSEvent(DS::Root *ds) {
       kinetic.clear();
       globaltime.clear();
       processMapID.clear();
+      volumeMapID.clear();
       int nSteps = track->GetMCTrackStepCount();
       for (int stp = 0; stp < nSteps; stp++) {
         DS::MCTrackStep *step = track->GetMCTrackStep(stp);
@@ -271,6 +276,15 @@ Processor::Result OutNtupleProc::DSEvent(DS::Root *ds) {
           processName.push_back(proc);
         }
         processMapID.push_back(processCodeMap[proc]);
+        // Volume
+        std::string vol = step->GetVolume();
+        if (volumeCodeMap.find(vol) == volumeCodeMap.end()) {
+          volumeCodeMap[vol] = volumeCodeMap.size();
+          volumeCodeIndex.push_back(volumeCodeMap.size() - 1);
+          volumeName.push_back(vol);
+        }
+        volumeMapID.push_back(volumeCodeMap[vol]);
+
         TVector3 tv = step->GetEndpoint();
         TVector3 momentum = step->GetMomentum();
         kinetic.push_back(step->GetKE());
@@ -291,6 +305,7 @@ Processor::Result OutNtupleProc::DSEvent(DS::Root *ds) {
       trackMomY.push_back(pytrack);
       trackMomZ.push_back(pztrack);
       trackProcess.push_back(processMapID);
+      trackVolume.push_back(volumeMapID);
     }
   }
 
