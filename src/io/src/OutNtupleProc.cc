@@ -250,8 +250,7 @@ Processor::Result OutNtupleProc::DSEvent(DS::Root *ds) {
     std::vector<double> xtrack, ytrack, ztrack;
     std::vector<double> pxtrack, pytrack, pztrack;
     std::vector<double> kinetic, globaltime;
-    std::vector<int> processMapID;
-    std::vector<int> volumeMapID;
+    std::vector<int> processMapID, volumeMapID;
     for (int trk = 0; trk < nTracks; trk++) {
       DS::MCTrack *track = mc->GetMCTrack(trk);
       trackPDG.push_back(track->GetPDGCode());
@@ -272,16 +271,16 @@ Processor::Result OutNtupleProc::DSEvent(DS::Root *ds) {
         std::string proc = step->GetProcess();
         if (processCodeMap.find(proc) == processCodeMap.end()) {
           processCodeMap[proc] = processCodeMap.size();
-          processCodeIndex.push_back(processCodeMap.size() - 1);
-          processName.push_back(proc);
+          // processCodeIndex.push_back(processCodeMap.size() - 1);
+          // processName.push_back(proc);
         }
         processMapID.push_back(processCodeMap[proc]);
         // Volume
         std::string vol = step->GetVolume();
         if (volumeCodeMap.find(vol) == volumeCodeMap.end()) {
           volumeCodeMap[vol] = volumeCodeMap.size();
-          volumeCodeIndex.push_back(volumeCodeMap.size() - 1);
-          volumeName.push_back(vol);
+        //   volumeCodeIndex.push_back(volumeCodeMap.size() - 1);
+        //   volumeName.push_back(vol);
         }
         volumeMapID.push_back(volumeCodeMap[vol]);
 
